@@ -13,21 +13,33 @@ import { mdLinks } from "./index.js";
 const argv = process.argv;
 import clc from "cli-color";
 
+// const argv = [
+//     'algo',
+//     'otro algo',
+//     'archivo2.md',
+//     '--validate'
+// ]
+
 //Opciones API
 const readOptions = () => {
     let options = { validate: false };
     if (argv.length > 3) {
+        console.log(argv, argv.length)
         if (argv.includes('--validate') || argv.includes('--v')) {
             options.validate = true
+
         } else {
             options = {};
         }
     }
+    //md-linkconsole.log(option)
     return options
 }
 
+
+
 //Opciones CLI
-mdLinks.mdLinks(argv[2], readOptions())
+mdLinks(argv[2], readOptions())
     .then((res) => {
         if (argv.includes('--stats') || argv.includes('--s')) {
             totalAndUnique(res);
@@ -37,13 +49,13 @@ mdLinks.mdLinks(argv[2], readOptions())
         } else if (argv.includes('--validate') || argv.includes('--v')) {
             res.forEach(arr => {
                 arr.forEach(e => {
-                    console.log((`\n${e.file} ${e.href} ${e.message} ${e.status} ${e.text}`));
+                    console.log(clc.green(`\n${e.file} \n${e.href} \n${e.message} \n${clc.yellow (e.status)} \n${e.text}`));
                 })
             })
         } else {
             res.forEach(arr => {
                 arr.forEach(e => {
-                    console.log((`\n${e.file} ${e.href} ${e.text}`));
+                    console.log(clc.green<<(`\n${e.file} \n${e.href} \n${e.text}`));
                 })
             })
         }

@@ -5,6 +5,7 @@
 import fs from 'fs'
 import path from 'path'
 import axios from 'axios'
+import { Console } from 'console';
 
 //Valida si la es ruta es absoluta
 const absolutePath = (route) => path.isAbsolute(route);
@@ -24,7 +25,9 @@ const extMdFile = (route) => path.extname(route) === ".md";
 
 
 //Lectura de ruta
+//getMdFiles('carpetaPrueba')
 const getMdFiles = (currentRoute) => {
+
     let arrayMdFiles = [];
     if (folderPath(currentRoute)) { //Si es directorio entra aquí
 
@@ -37,14 +40,17 @@ const getMdFiles = (currentRoute) => {
             arrayMdFiles.push(currentRoute);
         }
     }
+   // console.log('que esto', arrayMdFiles)
     return arrayMdFiles;
 }
 
 //Lectura de archivo .md
 const readMdFiles = (MDfile) => {
+    //Console.log('que es',MDfile)
     return new Promise((resolve, reject) => {
         fs.readFile(MDfile, "utf-8", (err, data) => {
             if (err) {
+                console.log(err)
                 reject(err);
             } else {
                 resolve({
@@ -82,6 +88,7 @@ const getLinksMdFiles = (routeMDfile) =>
                     });
                 });
                 resolve(arrayLinksConvert);
+                //console.log('es un', arrayLinksConvert)
                 return arrayLinksConvert;
             })
             .catch((err) => {
@@ -89,12 +96,15 @@ const getLinksMdFiles = (routeMDfile) =>
             });
     });
 
+    //getLinksMdFiles('archivo2.md')
+
 //Extrayendo información de cada link encontrado en archivo .md
 const getObjetsLinks = (routes) => {
     const promises = routes.map(elem => {
         return getLinksMdFiles(elem).then((arrayLinksConvert) => {
             return Promise.all(
                 arrayLinksConvert.map((object) => {
+                    //console.log('es un objeto',object)
                     return axios
                         .get(object.href)
                         .then((result) => {
@@ -121,12 +131,14 @@ const getObjetsLinks = (routes) => {
     })
     return Promise.all(promises)
 }
+//getObjetsLinks(["archivo2.md"])
 
 //Función que retorna el total de links y links únicos
 const totalAndUnique = (arraylinks) => {
     let totalLinks = 0;
     let uniqueLinks = [];
     arraylinks.forEach(arr => {
+        //console.log('de',arr)
         totalLinks += arr.length;
         uniqueLinks = uniqueLinks.concat(arr)
     })
@@ -134,6 +146,7 @@ const totalAndUnique = (arraylinks) => {
     const stats = `${('Total :')} ${(totalLinks)}\n${('Unique :')} ${(uniqueLinks.size)}`;
     console.log(stats);
 }
+//totalAndUnique(['archivo2.md'])
 
 //Función que verifica si hay algun link roto
 const broken = (arraylinks) => {
@@ -144,6 +157,7 @@ const broken = (arraylinks) => {
     const stats = `${('Broken :')} ${(broken.length)}`;
     console.log(stats);
 }
+
 
 export {
     getMdFiles,

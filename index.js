@@ -7,7 +7,7 @@
 import { convertPath, getMdFiles, getObjetsLinks } from "./funciones.js";
 
 
-const mdLinks = (path, option) => {
+const mdLinks = (path, options) => {
   return new Promise((resolve, reject) => {
     //Función que convierte ruta en absoluta
     const convertedRoute = convertPath(path)
@@ -24,7 +24,7 @@ const mdLinks = (path, option) => {
   });
 };
 
-mdLinks('archivo2.md')
+//mdLinks('archivo2.md')
 
 // module.exports = {
 //   mdLinks,
